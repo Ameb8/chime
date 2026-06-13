@@ -42,20 +42,20 @@ The same `chime` binary covers both roles. On a remote agent machine the user on
 ### Component Overview
 
 ```
-┌─────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────┐
 │  chime binary                                        │
 │                                                      │
-│  ┌─────────────┐   ┌────────────────────────────┐   │
-│  │  CLI layer  │   │  Server (HTTP)             │   │
-│  │  (cobra)    │   │  POST /notify              │   │
-│  │             │   │  GET  /health              │   │
-│  │  notify     │   │                            │   │
-│  │  start      │   │  ┌──────────────────────┐  │   │
-│  │  stop       │   │  │  Dispatcher          │  │   │
-│  │  status     │   │  │  routes event type   │  │   │
-│  │  install    │   │  │  to backend(s)       │  │   │
-│  └──────┬──────┘   │  └──────────┬───────────┘  │   │
-│         │           │             │               │   │
+│  ┌─────────────┐    ┌────────────────────────────┐   │
+│  │  CLI layer  │    │  Server (HTTP)             │   │
+│  │  (cobra)    │    │  POST /notify              │   │
+│  │             │    │  GET  /health              │   │
+│  │  notify     │    │                            │   │
+│  │  start      │    │  ┌──────────────────────┐  │   │
+│  │  stop       │    │  │  Dispatcher          │  │   │
+│  │  status     │    │  │  routes event type   │  │   │
+│  │  install    │    │  │  to backend(s)       │  │   │
+│  └──────┬──────┘    │  └──────────┬───────────┘  │   │
+│         │           │             │              │   │
 │         │ HTTP      │    ┌────────┴─────────┐    │   │
 │         └───────────┼───►│  Backends        │    │   │
 │                     │    │  ToastBackend    │    │   │
@@ -63,8 +63,8 @@ The same `chime` binary covers both roles. On a remote agent machine the user on
 │                     │    └──────────────────┘    │   │
 │                     └────────────────────────────┘   │
 │                                                      │
-│  Config (viper) · PID file · API key store           │
-└─────────────────────────────────────────────────────┘
+│ internal/config · internal/paths · internal/exitcode │
+└──────────────────────────────────────────────────────┘
 ```
 
 ### Request Lifecycle
@@ -78,7 +78,11 @@ The same `chime` binary covers both roles. On a remote agent machine the user on
 
 ### Daemon Model
 
-`chime start` forks into the background, writes its PID to `~/.local/share/chime/chime.pid` (Linux/macOS), and redirects logs to `~/.local/share/chime/chime.log`. No launchd/systemd required for MVP — a `chime service install` subcommand is reserved for a future release to wire up proper OS service managers.
+**Current scope:** `chime start` runs in the foreground (`--foreground` is the only implemented mode). The server blocks until `SIGINT` or `SIGTERM`, then shuts down gracefully and exits 0. Users manage the process with their own tooling (a separate terminal, tmux, etc.).
+
+The PID file path (`~/.local/share/chime/chime.pid`) and background daemonize path are stubbed for future implementation. `chime stop` and `chime status` read the PID file and are implemented; they require the server to have been started with a future background mode or a manually written PID file.
+
+Background daemonizing and `chime service install` (launchd/systemd) are deferred to a future release — see [Future Work](#future-work).
 
 ---
 
@@ -88,24 +92,25 @@ All commands follow the pattern `chime <command> [flags]`.
 
 ### `chime start`
 
-Start the notification server in the background.
+Start the notification server. Currently runs in the foreground only.
 
 ```
 chime start [flags]
 
 Flags:
   --bind string    Address to listen on (default "0.0.0.0:7777")
-  --foreground     Run in the foreground instead of daemonizing
   --log string     Log file path (default ~/.local/share/chime/chime.log)
 ```
 
-On first run, if no API key exists in the config, one is generated and printed once.
+On first run, if no API key exists in the config, one is generated and printed before the server starts.
 
 ```
 $ chime start
-Generated API key: chime_a3f9...c821
+API key: chime_a3f9...c821
 Add to remote machines: export CHIME_KEY=chime_a3f9...c821
-Server listening on 0.0.0.0:7777 (daemonizing...)
+Server listening on 0.0.0.0:7777
+^C
+Server stopped.
 ```
 
 ### `chime stop`
@@ -160,7 +165,7 @@ chime notify --event complete --agent claude-code
 chime notify --event waiting --agent codex --message "Needs permission to run rm -rf"
 ```
 
-Exit codes: `0` on success, `1` on connection failure, `2` on auth failure. Hook scripts should not block the agent on failure — a `|| true` suffix is recommended.
+For exit code details, see CLI_SPEC.md. Hook scripts should not block the agent on failure — a `|| true` suffix is recommended.
 
 ### `chime install`
 
@@ -450,11 +455,11 @@ See `hooks/aider/README.md`.
 chime/
 ├── cmd/
 │   └── chime/
-│       └── main.go                  # Entry point; wires cobra root command
+│       └── main.go                  # Entry point; calls cli.NewRootCmd().Execute()
 │
 ├── internal/
 │   ├── cli/                         # Cobra command implementations
-│   │   ├── root.go                  # Root command, persistent flags, viper setup
+│   │   ├── root.go                  # Root command, NewRootCmd(), registers all subcommands
 │   │   ├── start.go                 # chime start
 │   │   ├── stop.go                  # chime stop
 │   │   ├── status.go                # chime status
@@ -480,6 +485,13 @@ chime/
 │   ├── config/
 │   │   ├── config.go                # Config struct, defaults, viper binding
 │   │   └── key.go                   # API key generation and storage
+│   │
+│   ├── exitcode/
+│   │   ├── codes.go                 # Exit code constants (0–5)
+│   │   └── exitcode.go              # Error sentinel type checked by main.go
+│   │
+│   ├── paths/
+│   │   └── paths.go                 # Canonical data/config directory paths
 │   │
 │   ├── daemon/
 │   │   ├── daemon.go                # Fork-and-daemonize logic
@@ -530,8 +542,10 @@ chime/
 | `internal/cli` | Command parsing, flag wiring, calls into other packages |
 | `internal/server` | HTTP lifecycle, request validation, auth |
 | `internal/notify` | Backend interface, OS-specific implementations, dispatcher |
-| `internal/config` | Viper setup, config struct, key generation |
-| `internal/daemon` | PID file management, fork/background logic |
+| `internal/config` | Viper setup, typed Config struct, key generation |
+| `internal/exitcode` | Exit code constants and sentinel error type checked by main.go |
+| `internal/paths` | Canonical config file, data directory, PID file, and log file paths |
+| `internal/daemon` | PID file read/write/check; daemonize logic (future) |
 | `internal/client` | HTTP client used by `chime notify` |
 | `assets` | Embedded sound files |
 
@@ -583,6 +597,7 @@ All OS-tool invocations (`osascript`, `notify-send`, `afplay`) are runtime `exec
 
 Roughly in priority order:
 
+- `chime start` background mode — fork/daemonize, PID file management, `chime stop` and `chime status` fully functional.
 - `chime service install` — generates and loads a launchd plist (macOS) or systemd unit (Linux) for auto-start on login.
 - `chime install <agent>` with write mode — actually patches agent config files rather than printing snippets.
 - Additional event types — `error`, `heartbeat`, `started`.
