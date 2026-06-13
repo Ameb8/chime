@@ -1,0 +1,14 @@
+docs/specs/cli.md
+  h_11a994996f9bb9 1-448
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "development:1.4.12",
+  "base_commit_sha": "77d0c7350aae4085e48b0df6840a3374dd3968cb",
+  "prompts": {},
+  "humans": {
+    "h_11a994996f9bb9": {
+      "author": "Alex Buckley <alexmeb81@outlook.com>"
+    }
+  }
+}
