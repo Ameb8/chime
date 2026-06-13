@@ -119,7 +119,7 @@ Do not use `slog` for CLI output, and do not use `fmt` for server logs. If you a
 Before finishing any task, run:
 
 ```sh
-gofmt -w .
+goimports -w .
 golangci-lint run        # fix any issues before marking task complete
 go test ./...
 ```
