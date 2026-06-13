@@ -1,0 +1,14 @@
+README.md
+  h_11a994996f9bb9 1-65
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "development:1.4.12",
+  "base_commit_sha": "b144a98d58af027945ad24518c126f7b9d3188db",
+  "prompts": {},
+  "humans": {
+    "h_11a994996f9bb9": {
+      "author": "Alex Buckley <alexmeb81@outlook.com>"
+    }
+  }
+}
