@@ -1,0 +1,14 @@
+.golangci.yml
+  h_11a994996f9bb9 1-12
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "development:1.4.12",
+  "base_commit_sha": "da504aeaf9e218392ac2c9bd85e1f6be8af20bf5",
+  "prompts": {},
+  "humans": {
+    "h_11a994996f9bb9": {
+      "author": "Alex Buckley <alexmeb81@outlook.com>"
+    }
+  }
+}
