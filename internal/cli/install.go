@@ -3,6 +3,7 @@ package cli
 import (
 	"fmt"
 
+	appconfig "github.com/Ameb8/chime/internal/config"
 	"github.com/spf13/cobra"
 )
 
@@ -13,7 +14,7 @@ type installOptions struct {
 	key    string
 }
 
-func newInstallCmd() *cobra.Command {
+func newInstallCmd(_ **appconfig.Config) *cobra.Command {
 	opts := &installOptions{}
 
 	cmd := &cobra.Command{
