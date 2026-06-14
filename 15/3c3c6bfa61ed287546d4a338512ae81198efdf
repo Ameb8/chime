@@ -1,0 +1,26 @@
+internal/cli/notify_test.go
+  s_056f12ee236051::t_c9d71b016efeef 1-284
+internal/cli/notify.go
+  s_056f12ee236051::t_102e8ac2893aac 4-6,8-9,21,28-29,43-98
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "development:1.4.12",
+  "base_commit_sha": "153c3c6bfa61ed287546d4a338512ae81198efdf",
+  "prompts": {},
+  "humans": {
+    "h_11a994996f9bb9": {
+      "author": "Alex Buckley <alexmeb81@outlook.com>"
+    }
+  },
+  "sessions": {
+    "s_056f12ee236051": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ec79d-246c-7cb0-826a-bbd5213fa506",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Alex Buckley <alexmeb81@outlook.com>"
+    }
+  }
+}
