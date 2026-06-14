@@ -1,0 +1,4 @@
+interface:
+  display_name: "Add Sound Implementation"
+  short_description: "Guide Chime sound backend implementation"
+  default_prompt: "Use $add-sound-implementation to add a Chime sound backend implementation."
