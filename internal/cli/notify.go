@@ -1,6 +1,9 @@
 package cli
 
-import "github.com/spf13/cobra"
+import (
+	appconfig "github.com/Ameb8/chime/internal/config"
+	"github.com/spf13/cobra"
+)
 
 type notifyOptions struct {
 	event   string
@@ -10,7 +13,7 @@ type notifyOptions struct {
 	key     string
 }
 
-func newNotifyCmd() *cobra.Command {
+func newNotifyCmd(_ **appconfig.Config) *cobra.Command {
 	opts := &notifyOptions{}
 
 	cmd := &cobra.Command{

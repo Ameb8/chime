@@ -1,6 +1,9 @@
 package cli
 
-import "github.com/spf13/cobra"
+import (
+	appconfig "github.com/Ameb8/chime/internal/config"
+	"github.com/spf13/cobra"
+)
 
 type startOptions struct {
 	bind       string
@@ -8,7 +11,7 @@ type startOptions struct {
 	logPath    string
 }
 
-func newStartCmd() *cobra.Command {
+func newStartCmd(_ **appconfig.Config) *cobra.Command {
 	opts := &startOptions{
 		bind:    "0.0.0.0:7777",
 		logPath: "~/.local/share/chime/chime.log",

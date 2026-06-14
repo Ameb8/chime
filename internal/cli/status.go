@@ -1,8 +1,11 @@
 package cli
 
-import "github.com/spf13/cobra"
+import (
+	appconfig "github.com/Ameb8/chime/internal/config"
+	"github.com/spf13/cobra"
+)
 
-func newStatusCmd() *cobra.Command {
+func newStatusCmd(_ **appconfig.Config) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "status",
 		Short: "Print the current server status",

@@ -2,8 +2,9 @@ package cli
 
 import (
 	"fmt"
-	"os"
 
+	"github.com/Ameb8/chime/internal/config"
+	"github.com/Ameb8/chime/internal/paths"
 	"github.com/spf13/cobra"
 )
 
@@ -14,8 +15,10 @@ type rootOptions struct {
 }
 
 func NewRootCmd() *cobra.Command {
+	var cfg *config.Config
+	paths.SetConfigFile("")
 	opts := &rootOptions{
-		configPath: defaultConfigPath(),
+		configPath: paths.ConfigFile(),
 	}
 
 	rootCmd := &cobra.Command{
@@ -26,25 +29,38 @@ func NewRootCmd() *cobra.Command {
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			return cmd.Help()
 		},
+		PersistentPreRunE: func(cmd *cobra.Command, _ []string) error {
+			if cmd == cmd.Root() {
+				return nil
+			}
+
+			paths.SetConfigFile(opts.configPath)
+			loaded, err := config.Load()
+			if err != nil {
+				return fmt.Errorf("load config: %w", err)
+			}
+			cfg = loaded
+			return nil
+		},
 	}
 
 	configureVersion(rootCmd)
 	rootCmd.PersistentFlags().StringVar(&opts.configPath, "config", opts.configPath, "Path to config file")
 	rootCmd.CompletionOptions.DisableDefaultCmd = true
 
-	registerSubcommands(rootCmd)
+	registerSubcommands(rootCmd, &cfg)
 
 	return rootCmd
 }
 
-func registerSubcommands(rootCmd *cobra.Command) {
+func registerSubcommands(rootCmd *cobra.Command, cfg **config.Config) {
 	rootCmd.AddCommand(
-		newStartCmd(),
-		newStopCmd(),
-		newStatusCmd(),
-		newNotifyCmd(),
-		newInstallCmd(),
-		newConfigCmd(),
+		newStartCmd(cfg),
+		newStopCmd(cfg),
+		newStatusCmd(cfg),
+		newNotifyCmd(cfg),
+		newInstallCmd(cfg),
+		newConfigCmd(cfg),
 	)
 }
 
@@ -55,12 +71,4 @@ func configureVersion(cmd *cobra.Command) {
 
 func notImplemented(command string) error {
 	return fmt.Errorf("%s command is not implemented yet", command)
-}
-
-func defaultConfigPath() string {
-	if configPath := os.Getenv("CHIME_CONFIG"); configPath != "" {
-		return configPath
-	}
-
-	return "~/.config/chime/config.yaml"
 }
