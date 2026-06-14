@@ -1,0 +1,25 @@
+docs/specs/notify-command.md
+  s_297239a1f3a7f6::t_0cfb58496b2c10 1,7,9,11,13-14,167,442,445
+  s_297239a1f3a7f6::t_079d9a769b3081 2-6,8,10,12,15-166,168-441,443-444,446-467
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "development:1.4.12",
+  "base_commit_sha": "549a75c66ec28ca65c06481a1d447848c5f75951",
+  "prompts": {},
+  "humans": {
+    "h_11a994996f9bb9": {
+      "author": "Alex Buckley <alexmeb81@outlook.com>"
+    }
+  },
+  "sessions": {
+    "s_297239a1f3a7f6": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ec78a-63eb-7640-be93-5ba3e18c1bb7",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Alex Buckley <alexmeb81@outlook.com>"
+    }
+  }
+}
