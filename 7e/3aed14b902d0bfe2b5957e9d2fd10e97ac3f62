@@ -1,0 +1,29 @@
+internal/client/client_test.go
+  s_056f12ee236051::t_c0811e12102512 1-186
+internal/client/client.go
+  s_056f12ee236051::t_37227641048926 1-40,44-90,94-98,102-104,108-160
+  s_056f12ee236051::t_c41d8d589782c0 99-101,105-107
+  s_056f12ee236051::t_f47e711a1ea128 91-93
+  s_056f12ee236051::t_b14cfa99986b32 41-43
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "development:1.4.12",
+  "base_commit_sha": "7e3aed14b902d0bfe2b5957e9d2fd10e97ac3f62",
+  "prompts": {},
+  "humans": {
+    "h_11a994996f9bb9": {
+      "author": "Alex Buckley <alexmeb81@outlook.com>"
+    }
+  },
+  "sessions": {
+    "s_056f12ee236051": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ec79d-246c-7cb0-826a-bbd5213fa506",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Alex Buckley <alexmeb81@outlook.com>"
+    }
+  }
+}
