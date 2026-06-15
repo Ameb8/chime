@@ -185,8 +185,37 @@ func parseLogLevel(level string) (slog.Level, error) {
 	}
 }
 
-func buildBackends(_ *appconfig.Config) []notify.Backend {
-	return []notify.Backend{}
+func buildBackends(cfg *appconfig.Config) []notify.Backend {
+	if cfg == nil {
+		return nil
+	}
+
+	backends := make([]notify.Backend, 0, 2)
+	if cfg.Notifications.Toast.Enabled {
+		backends = append(backends, notify.NewToastBackend(notify.ToastOptions{
+			Enabled: true,
+			Events:  configEvents(cfg.Notifications.Toast.Events),
+		}))
+	}
+	if cfg.Notifications.Sound.Enabled {
+		backends = append(backends, notify.NewSoundBackend(notify.SoundOptions{
+			Enabled:       true,
+			Events:        configEvents(cfg.Notifications.Sound.Events),
+			CompleteSound: expandPath(cfg.Notifications.Sound.CompleteSound),
+			WaitingSound:  expandPath(cfg.Notifications.Sound.WaitingSound),
+		}))
+	}
+	return backends
+}
+
+func configEvents(events []string) []notify.Event {
+	out := make([]notify.Event, 0, len(events))
+	for _, event := range events {
+		if event = strings.TrimSpace(event); event != "" {
+			out = append(out, notify.Event(event))
+		}
+	}
+	return out
 }
 
 func expandPath(path string) string {
