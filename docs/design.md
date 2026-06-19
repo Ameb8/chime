@@ -167,6 +167,32 @@ chime notify --event waiting --agent codex --message "Needs permission to run rm
 
 For exit code details, see CLI_SPEC.md. Hook scripts should not block the agent on failure — a `|| true` suffix is recommended.
 
+### `chime run`
+
+Run a foreground command and notify when it completes.
+
+```
+chime run [flags] -- <command> [args...]
+
+Flags:
+  --agent string     Agent/source name sent with the notification (default executable basename)
+  --message string   Optional label included in the notification message
+  --server string    Server URL (overrides config/env)
+  --key string       API key (overrides config/env)
+```
+
+The `--` delimiter is required. The wrapped command is executed directly, not
+through a shell, and inherits Chime's stdin, stdout, stderr, working directory,
+and environment. After the command exits, Chime sends a `complete` notification
+whose message includes the command, exit code/status, and duration. Notification
+failures are warnings only and do not replace the wrapped command's exit code.
+
+Example:
+
+```sh
+chime run --message "frontend build" -- npm run build
+```
+
 ### `chime install`
 
 Print hook script snippets for a given agent tool. Does not write any files.
