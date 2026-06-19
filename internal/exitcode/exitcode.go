@@ -8,3 +8,11 @@ type Error struct {
 func (e *Error) Error() string {
 	return e.Message
 }
+
+type SilentError struct {
+	Code int
+}
+
+func (e *SilentError) Error() string {
+	return ""
+}

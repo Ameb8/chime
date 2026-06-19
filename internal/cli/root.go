@@ -59,6 +59,7 @@ func registerSubcommands(rootCmd *cobra.Command, cfg **config.Config) {
 		newStopCmd(cfg),
 		newStatusCmd(cfg),
 		newNotifyCmd(cfg),
+		newRunCmd(cfg),
 		newInstallCmd(cfg),
 		newConfigCmd(cfg),
 	)

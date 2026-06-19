@@ -264,6 +264,51 @@ Errors MUST be non-fatal to the calling shell script. Hook scripts SHOULD use `c
 
 ---
 
+## `chime run`
+
+Run a foreground command and send a completion notification after it exits.
+
+```
+chime run [flags] -- <command> [args...]
+```
+
+Detailed behavior is defined in `docs/specs/run-command.md`.
+
+### Flags
+
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--agent` | string | executable basename | Agent/source name sent with the notification |
+| `--message` | string | `""` | Optional label included in the notification message |
+| `--server` | string | resolved | Server base URL |
+| `--key` | string | resolved | API key |
+
+### Behavior
+
+1. Require the `--` delimiter before the wrapped command.
+2. Execute the wrapped command directly, without invoking a shell.
+3. Attach the wrapped command's stdin, stdout, and stderr to Chime's process.
+4. After the wrapped command exits, attempt one `complete` notification.
+5. Preserve the wrapped command's exit code, including Unix signal exit codes.
+6. Treat notification setup or delivery failures as stderr warnings only.
+
+### Testable conditions
+
+- **RUN-1** `chime run` MUST exit 1 and report usage guidance.
+- **RUN-2** `chime run --` MUST exit 1 and report usage guidance.
+- **RUN-3** `chime run test-command` MUST exit 1 and tell the user to use `--`.
+- **RUN-4** `chime run -- test-command --child-flag` MUST pass `["test-command", "--child-flag"]` to the executor.
+- **RUN-5** A wrapped command that exits 0 MUST cause `chime run` to exit 0.
+- **RUN-6** A wrapped command that exits non-zero MUST cause `chime run` to exit with the same code and without printing an extra Chime error.
+- **RUN-7** A wrapped command's stdout and stderr MUST pass through Chime.
+- **RUN-8** A wrapped command that reads stdin MUST be able to read from Chime's stdin.
+- **RUN-9** Successful and failed commands MUST send event `"complete"`.
+- **RUN-10** The notification message MUST include the display command, status, exit code where relevant, and duration.
+- **RUN-11** Notification failures MUST print a warning to stderr and preserve the wrapped command's exit code.
+- **RUN-12** On Linux and macOS, signal-terminated commands MUST use shell-compatible exit codes such as 130 for `SIGINT` and 143 for `SIGTERM`.
+
+---
+
 ## `chime install`
 
 Print hook configuration snippets for a given agent tool.
