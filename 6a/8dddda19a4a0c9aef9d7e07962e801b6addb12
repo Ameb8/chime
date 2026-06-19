@@ -1,0 +1,40 @@
+internal/cli/run_test.go
+  s_6cf3f8c6faa0d7::t_df7bda70bcbf94 495-497,502-504
+  s_6cf3f8c6faa0d7::t_01208261de81a2 1-54,56-494,498-501,505-614
+  s_6cf3f8c6faa0d7::t_ea0e2ac43edf64 55
+internal/cli/run_other.go
+  s_6cf3f8c6faa0d7::t_a7f5b4f5767c53 1-21
+internal/exitcode/exitcode.go
+  s_6cf3f8c6faa0d7::t_78319af9f7a1d3 11-18
+internal/cli/run_unix.go
+  s_6cf3f8c6faa0d7::t_282d7e36dc8eb8 1-67
+internal/cli/run_unix_test.go
+  s_6cf3f8c6faa0d7::t_e3f4052d050324 1-54
+internal/cli/root.go
+  s_6cf3f8c6faa0d7::t_0f331179e91d72 62
+cmd/chime/main.go
+  s_6cf3f8c6faa0d7::t_50a122967648f8 14-17,21,25
+internal/cli/run.go
+  s_6cf3f8c6faa0d7::t_34c5a67920de65 1-286
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "development:1.4.12",
+  "base_commit_sha": "6a8dddda19a4a0c9aef9d7e07962e801b6addb12",
+  "prompts": {},
+  "humans": {
+    "h_11a994996f9bb9": {
+      "author": "Alex Buckley <alexmeb81@outlook.com>"
+    }
+  },
+  "sessions": {
+    "s_6cf3f8c6faa0d7": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ededd-9b13-7e73-8f23-fa9cbc32db1c",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Alex Buckley <alexmeb81@outlook.com>"
+    }
+  }
+}
